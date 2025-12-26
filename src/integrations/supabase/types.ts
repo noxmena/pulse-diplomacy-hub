@@ -14,7 +14,45 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      join_applications: {
+        Row: {
+          age: number
+          created_at: string
+          education: string
+          email: string
+          experience: string | null
+          governorate: string
+          id: string
+          motivation: string
+          name: string
+          phone: string
+        }
+        Insert: {
+          age: number
+          created_at?: string
+          education: string
+          email: string
+          experience?: string | null
+          governorate: string
+          id?: string
+          motivation: string
+          name: string
+          phone: string
+        }
+        Update: {
+          age?: number
+          created_at?: string
+          education?: string
+          email?: string
+          experience?: string | null
+          governorate?: string
+          id?: string
+          motivation?: string
+          name?: string
+          phone?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
