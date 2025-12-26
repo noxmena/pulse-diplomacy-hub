@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Send, User, Mail, Phone, GraduationCap, MapPin } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 
 const JoinForm = () => {
   const { toast } = useToast();
@@ -28,8 +29,28 @@ const JoinForm = () => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate submission
-    await new Promise(resolve => setTimeout(resolve, 1500));
+    const { error } = await supabase
+      .from('join_applications')
+      .insert({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        age: parseInt(formData.age),
+        governorate: formData.governorate,
+        education: formData.education,
+        experience: formData.experience || null,
+        motivation: formData.motivation,
+      });
+
+    if (error) {
+      toast({
+        title: "حدث خطأ",
+        description: "فشل في إرسال الطلب، يرجى المحاولة مرة أخرى",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
     
     toast({
       title: "تم إرسال طلبك بنجاح! ✓",
