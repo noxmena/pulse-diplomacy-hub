@@ -14,6 +14,347 @@ export type Database = {
   }
   public: {
     Tables: {
+      applicants: {
+        Row: {
+          age: number
+          attachments: string[] | null
+          availability: string | null
+          city: string
+          committee_preference: string | null
+          created_at: string
+          cv_url: string | null
+          education: string
+          email: string
+          experience: string | null
+          full_name: string
+          governorate: string
+          id: string
+          motivation: string
+          phone: string
+          reference_number: string | null
+          screened_at: string | null
+          screened_by: string | null
+          screening_notes: string | null
+          screening_score: number | null
+          skills: string[] | null
+          status: Database["public"]["Enums"]["applicant_status"]
+          updated_at: string
+        }
+        Insert: {
+          age: number
+          attachments?: string[] | null
+          availability?: string | null
+          city: string
+          committee_preference?: string | null
+          created_at?: string
+          cv_url?: string | null
+          education: string
+          email: string
+          experience?: string | null
+          full_name: string
+          governorate: string
+          id?: string
+          motivation: string
+          phone: string
+          reference_number?: string | null
+          screened_at?: string | null
+          screened_by?: string | null
+          screening_notes?: string | null
+          screening_score?: number | null
+          skills?: string[] | null
+          status?: Database["public"]["Enums"]["applicant_status"]
+          updated_at?: string
+        }
+        Update: {
+          age?: number
+          attachments?: string[] | null
+          availability?: string | null
+          city?: string
+          committee_preference?: string | null
+          created_at?: string
+          cv_url?: string | null
+          education?: string
+          email?: string
+          experience?: string | null
+          full_name?: string
+          governorate?: string
+          id?: string
+          motivation?: string
+          phone?: string
+          reference_number?: string | null
+          screened_at?: string | null
+          screened_by?: string | null
+          screening_notes?: string | null
+          screening_score?: number | null
+          skills?: string[] | null
+          status?: Database["public"]["Enums"]["applicant_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applicants_committee_preference_fkey"
+            columns: ["committee_preference"]
+            isOneToOne: false
+            referencedRelation: "committees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      application_notes: {
+        Row: {
+          applicant_id: string
+          created_at: string
+          created_by: string | null
+          id: string
+          note: string
+        }
+        Insert: {
+          applicant_id: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note: string
+        }
+        Update: {
+          applicant_id?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          note?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "application_notes_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "applicants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "application_notes_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "hr_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      committees: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description_ar: string | null
+          description_en: string | null
+          head_member_id: string | null
+          id: string
+          is_active: boolean
+          name_ar: string
+          name_en: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          head_member_id?: string | null
+          id?: string
+          is_active?: boolean
+          name_ar: string
+          name_en: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description_ar?: string | null
+          description_en?: string | null
+          head_member_id?: string | null
+          id?: string
+          is_active?: boolean
+          name_ar?: string
+          name_en?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      disciplinary_actions: {
+        Row: {
+          action_date: string
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          disciplinary_type: Database["public"]["Enums"]["disciplinary_type"]
+          evidence_urls: string[] | null
+          id: string
+          member_id: string
+          outcome: string | null
+          reason: string
+          updated_at: string
+        }
+        Insert: {
+          action_date?: string
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          disciplinary_type: Database["public"]["Enums"]["disciplinary_type"]
+          evidence_urls?: string[] | null
+          id?: string
+          member_id: string
+          outcome?: string | null
+          reason: string
+          updated_at?: string
+        }
+        Update: {
+          action_date?: string
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          disciplinary_type?: Database["public"]["Enums"]["disciplinary_type"]
+          evidence_urls?: string[] | null
+          id?: string
+          member_id?: string
+          outcome?: string | null
+          reason?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "disciplinary_actions_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "hr_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "disciplinary_actions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      hr_profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_active: boolean
+          last_login: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string
+          email: string
+          full_name: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          is_active?: boolean
+          last_login?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      interviews: {
+        Row: {
+          applicant_id: string
+          created_at: string
+          created_by: string | null
+          duration_minutes: number
+          id: string
+          interviewer_id: string | null
+          is_draft: boolean
+          location: string | null
+          meeting_link: string | null
+          notes: string | null
+          recommendation: string | null
+          scheduled_at: string
+          score_communication: number | null
+          score_culture_fit: number | null
+          score_motivation: number | null
+          score_overall: number | null
+          score_skills: number | null
+          status: Database["public"]["Enums"]["interview_status"]
+          total_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          applicant_id: string
+          created_at?: string
+          created_by?: string | null
+          duration_minutes?: number
+          id?: string
+          interviewer_id?: string | null
+          is_draft?: boolean
+          location?: string | null
+          meeting_link?: string | null
+          notes?: string | null
+          recommendation?: string | null
+          scheduled_at: string
+          score_communication?: number | null
+          score_culture_fit?: number | null
+          score_motivation?: number | null
+          score_overall?: number | null
+          score_skills?: number | null
+          status?: Database["public"]["Enums"]["interview_status"]
+          total_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          applicant_id?: string
+          created_at?: string
+          created_by?: string | null
+          duration_minutes?: number
+          id?: string
+          interviewer_id?: string | null
+          is_draft?: boolean
+          location?: string | null
+          meeting_link?: string | null
+          notes?: string | null
+          recommendation?: string | null
+          scheduled_at?: string
+          score_communication?: number | null
+          score_culture_fit?: number | null
+          score_motivation?: number | null
+          score_overall?: number | null
+          score_skills?: number | null
+          status?: Database["public"]["Enums"]["interview_status"]
+          total_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interviews_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: false
+            referencedRelation: "applicants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interviews_interviewer_id_fkey"
+            columns: ["interviewer_id"]
+            isOneToOne: false
+            referencedRelation: "hr_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       join_applications: {
         Row: {
           age: number
@@ -53,15 +394,273 @@ export type Database = {
         }
         Relationships: []
       }
+      members: {
+        Row: {
+          applicant_id: string | null
+          attendance_rate: number | null
+          avatar_url: string | null
+          committee_id: string | null
+          created_at: string
+          created_by: string | null
+          email: string
+          full_name: string
+          id: string
+          join_date: string
+          onboarding_checklist: Json | null
+          onboarding_completed: boolean
+          phone: string
+          role_title: string | null
+          status: Database["public"]["Enums"]["member_status"]
+          updated_at: string
+        }
+        Insert: {
+          applicant_id?: string | null
+          attendance_rate?: number | null
+          avatar_url?: string | null
+          committee_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email: string
+          full_name: string
+          id?: string
+          join_date?: string
+          onboarding_checklist?: Json | null
+          onboarding_completed?: boolean
+          phone: string
+          role_title?: string | null
+          status?: Database["public"]["Enums"]["member_status"]
+          updated_at?: string
+        }
+        Update: {
+          applicant_id?: string | null
+          attendance_rate?: number | null
+          avatar_url?: string | null
+          committee_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          full_name?: string
+          id?: string
+          join_date?: string
+          onboarding_checklist?: Json | null
+          onboarding_completed?: boolean
+          phone?: string
+          role_title?: string | null
+          status?: Database["public"]["Enums"]["member_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "members_applicant_id_fkey"
+            columns: ["applicant_id"]
+            isOneToOne: true
+            referencedRelation: "applicants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "members_committee_id_fkey"
+            columns: ["committee_id"]
+            isOneToOne: false
+            referencedRelation: "committees"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      monthly_evaluations: {
+        Row: {
+          attendance_commitment: number
+          created_at: string
+          evaluation_month: string
+          evaluator_id: string | null
+          evaluator_notes: string | null
+          id: string
+          initiative_growth: number
+          is_submitted: boolean
+          member_id: string
+          policy_compliance: number
+          task_execution: number
+          team_collaboration: number
+          total_score: number | null
+          updated_at: string
+        }
+        Insert: {
+          attendance_commitment: number
+          created_at?: string
+          evaluation_month: string
+          evaluator_id?: string | null
+          evaluator_notes?: string | null
+          id?: string
+          initiative_growth: number
+          is_submitted?: boolean
+          member_id: string
+          policy_compliance: number
+          task_execution: number
+          team_collaboration: number
+          total_score?: number | null
+          updated_at?: string
+        }
+        Update: {
+          attendance_commitment?: number
+          created_at?: string
+          evaluation_month?: string
+          evaluator_id?: string | null
+          evaluator_notes?: string | null
+          id?: string
+          initiative_growth?: number
+          is_submitted?: boolean
+          member_id?: string
+          policy_compliance?: number
+          task_execution?: number
+          team_collaboration?: number
+          total_score?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "monthly_evaluations_evaluator_id_fkey"
+            columns: ["evaluator_id"]
+            isOneToOne: false
+            referencedRelation: "hr_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "monthly_evaluations_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      recognition_actions: {
+        Row: {
+          action_date: string
+          approved_by: string | null
+          created_at: string
+          created_by: string | null
+          evidence_urls: string[] | null
+          id: string
+          member_id: string
+          reason: string
+          recognition_type: Database["public"]["Enums"]["recognition_type"]
+          updated_at: string
+        }
+        Insert: {
+          action_date?: string
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          member_id: string
+          reason: string
+          recognition_type: Database["public"]["Enums"]["recognition_type"]
+          updated_at?: string
+        }
+        Update: {
+          action_date?: string
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string | null
+          evidence_urls?: string[] | null
+          id?: string
+          member_id?: string
+          reason?: string
+          recognition_type?: Database["public"]["Enums"]["recognition_type"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recognition_actions_approved_by_fkey"
+            columns: ["approved_by"]
+            isOneToOne: false
+            referencedRelation: "hr_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recognition_actions_member_id_fkey"
+            columns: ["member_id"]
+            isOneToOne: false
+            referencedRelation: "members"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_hr_or_admin: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "hr"
+      applicant_status:
+        | "new"
+        | "screening"
+        | "interview_scheduled"
+        | "interview_completed"
+        | "accepted"
+        | "rejected"
+        | "waitlist"
+        | "onboarding"
+        | "withdrawn"
+      disciplinary_type:
+        | "verbal_warning"
+        | "written_warning"
+        | "final_warning"
+        | "suspension"
+        | "termination"
+      interview_status:
+        | "scheduled"
+        | "completed"
+        | "cancelled"
+        | "no_show"
+        | "rescheduled"
+      member_status:
+        | "active"
+        | "inactive"
+        | "suspended"
+        | "on_leave"
+        | "offboarded"
+      recognition_type:
+        | "appreciation"
+        | "award"
+        | "certificate"
+        | "promotion"
+        | "bonus"
+        | "public_recognition"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -188,6 +787,48 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "hr"],
+      applicant_status: [
+        "new",
+        "screening",
+        "interview_scheduled",
+        "interview_completed",
+        "accepted",
+        "rejected",
+        "waitlist",
+        "onboarding",
+        "withdrawn",
+      ],
+      disciplinary_type: [
+        "verbal_warning",
+        "written_warning",
+        "final_warning",
+        "suspension",
+        "termination",
+      ],
+      interview_status: [
+        "scheduled",
+        "completed",
+        "cancelled",
+        "no_show",
+        "rescheduled",
+      ],
+      member_status: [
+        "active",
+        "inactive",
+        "suspended",
+        "on_leave",
+        "offboarded",
+      ],
+      recognition_type: [
+        "appreciation",
+        "award",
+        "certificate",
+        "promotion",
+        "bonus",
+        "public_recognition",
+      ],
+    },
   },
 } as const
