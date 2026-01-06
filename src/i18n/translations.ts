@@ -1,6 +1,6 @@
 export type Language = 'en' | 'ar';
 
-export const translations = {
+export const translations: Record<string, Record<string, Record<string, string>>> = {
   // Common
   common: {
     loading: { en: 'Loading...', ar: 'جاري التحميل...' },
@@ -28,6 +28,14 @@ export const translations = {
     error: { en: 'Error', ar: 'خطأ' },
     logout: { en: 'Logout', ar: 'تسجيل الخروج' },
     profile: { en: 'Profile', ar: 'الملف الشخصي' },
+    hrManager: { en: 'HR Manager', ar: 'مدير الموارد البشرية' },
+    viewAll: { en: 'View All', ar: 'عرض الكل' },
+    candidate: { en: 'Candidate', ar: 'المتقدم' },
+    score: { en: 'Score', ar: 'الدرجة' },
+    hired: { en: 'Hired', ar: 'تم التوظيف' },
+    pending: { en: 'Pending', ar: 'قيد الانتظار' },
+    rejected: { en: 'Rejected', ar: 'مرفوض' },
+    applicants: { en: 'Applicants', ar: 'المتقدمون' },
   },
 
   // Navigation
@@ -74,12 +82,17 @@ export const translations = {
   // Dashboard
   dashboard: {
     title: { en: 'HR Dashboard', ar: 'لوحة تحكم الموارد البشرية' },
+    hrOverview: { en: 'HR Overview', ar: 'نظرة عامة على الموارد البشرية' },
+    welcomeMessage: { en: "Welcome back, Ahmed. Here's what's happening today.", ar: 'أهلاً بعودتك، أحمد. إليك ما يحدث اليوم.' },
     welcome: { en: 'Welcome back', ar: 'أهلاً بعودتك' },
+    totalApplicants: { en: 'Total Applicants', ar: 'إجمالي المتقدمين' },
     newApplications: { en: 'New Applications', ar: 'طلبات جديدة' },
     pendingScreening: { en: 'Pending Screening', ar: 'في انتظار الفحص' },
     interviewsScheduled: { en: 'Interviews Scheduled', ar: 'مقابلات مجدولة' },
+    hiredThisYear: { en: 'Hired This Year', ar: 'التوظيف هذا العام' },
     acceptedThisMonth: { en: 'Accepted This Month', ar: 'المقبولين هذا الشهر' },
     avgInterviewScore: { en: 'Avg Interview Score', ar: 'متوسط درجة المقابلة' },
+    exportReport: { en: 'Export Report', ar: 'تصدير التقرير' },
     reviewApplications: { en: 'Review New Applications', ar: 'مراجعة الطلبات الجديدة' },
     scheduleInterviews: { en: 'Schedule Interviews', ar: 'جدولة المقابلات' },
     applicationsPerWeek: { en: 'Applications Per Week', ar: 'الطلبات أسبوعياً' },
@@ -88,6 +101,10 @@ export const translations = {
     recentActivity: { en: 'Recent Activity', ar: 'النشاط الأخير' },
     totalMembers: { en: 'Total Members', ar: 'إجمالي الأعضاء' },
     activeMembers: { en: 'Active Members', ar: 'الأعضاء النشطين' },
+    applicantsByStatus: { en: 'Applicants by Status', ar: 'المتقدمين حسب الحالة' },
+    recruitmentActivity: { en: 'Recruitment Activity', ar: 'نشاط التوظيف' },
+    upcomingInterviews: { en: 'Upcoming Interviews', ar: 'المقابلات القادمة' },
+    recentEvaluations: { en: 'Recent Evaluations', ar: 'التقييمات الأخيرة' },
   },
 
   // Applications
