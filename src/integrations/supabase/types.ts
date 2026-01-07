@@ -29,6 +29,7 @@ export type Database = {
           full_name: string
           governorate: string
           id: string
+          join_application_id: string | null
           motivation: string
           phone: string
           reference_number: string | null
@@ -54,6 +55,7 @@ export type Database = {
           full_name: string
           governorate: string
           id?: string
+          join_application_id?: string | null
           motivation: string
           phone: string
           reference_number?: string | null
@@ -79,6 +81,7 @@ export type Database = {
           full_name?: string
           governorate?: string
           id?: string
+          join_application_id?: string | null
           motivation?: string
           phone?: string
           reference_number?: string | null
@@ -96,6 +99,13 @@ export type Database = {
             columns: ["committee_preference"]
             isOneToOne: false
             referencedRelation: "committees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "applicants_join_application_id_fkey"
+            columns: ["join_application_id"]
+            isOneToOne: false
+            referencedRelation: "join_applications"
             referencedColumns: ["id"]
           },
         ]

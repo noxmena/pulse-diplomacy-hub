@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/i18n/LanguageContext";
 import { AuthProvider } from "@/hooks/useAuth";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 // Public Pages
 import Index from "./pages/Index";
@@ -41,22 +42,22 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/login" element={<LoginPage />} />
               
-              {/* HR Portal Routes */}
+              {/* HR Portal Routes - require HR or Admin role */}
               <Route path="/hr" element={<Navigate to="/hr/dashboard" replace />} />
-              <Route path="/hr/dashboard" element={<HRDashboard />} />
-              <Route path="/hr/applications" element={<ApplicationsPage />} />
-              <Route path="/hr/interviews" element={<InterviewsPage />} />
-              <Route path="/hr/members" element={<MembersPage />} />
-              <Route path="/hr/evaluations" element={<EvaluationsPage />} />
-              <Route path="/hr/recognition" element={<RecognitionPage />} />
-              <Route path="/hr/reports" element={<ReportsPage />} />
-              <Route path="/hr/flow" element={<HRFlowPage />} />
+              <Route path="/hr/dashboard" element={<ProtectedRoute requiredRole="hr"><HRDashboard /></ProtectedRoute>} />
+              <Route path="/hr/applications" element={<ProtectedRoute requiredRole="hr"><ApplicationsPage /></ProtectedRoute>} />
+              <Route path="/hr/interviews" element={<ProtectedRoute requiredRole="hr"><InterviewsPage /></ProtectedRoute>} />
+              <Route path="/hr/members" element={<ProtectedRoute requiredRole="hr"><MembersPage /></ProtectedRoute>} />
+              <Route path="/hr/evaluations" element={<ProtectedRoute requiredRole="hr"><EvaluationsPage /></ProtectedRoute>} />
+              <Route path="/hr/recognition" element={<ProtectedRoute requiredRole="hr"><RecognitionPage /></ProtectedRoute>} />
+              <Route path="/hr/reports" element={<ProtectedRoute requiredRole="hr"><ReportsPage /></ProtectedRoute>} />
+              <Route path="/hr/flow" element={<ProtectedRoute requiredRole="hr"><HRFlowPage /></ProtectedRoute>} />
               
-              {/* Admin Routes */}
+              {/* Admin Routes - require Admin role only */}
               <Route path="/admin" element={<Navigate to="/admin/users" replace />} />
-              <Route path="/admin/users" element={<UsersPage />} />
-              <Route path="/admin/committees" element={<CommitteesPage />} />
-              <Route path="/admin/settings" element={<SettingsPage />} />
+              <Route path="/admin/users" element={<ProtectedRoute requiredRole="admin"><UsersPage /></ProtectedRoute>} />
+              <Route path="/admin/committees" element={<ProtectedRoute requiredRole="admin"><CommitteesPage /></ProtectedRoute>} />
+              <Route path="/admin/settings" element={<ProtectedRoute requiredRole="admin"><SettingsPage /></ProtectedRoute>} />
               
               {/* Catch-all */}
               <Route path="*" element={<NotFound />} />
