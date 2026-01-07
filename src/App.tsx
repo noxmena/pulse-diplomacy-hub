@@ -16,6 +16,7 @@ import LoginPage from "./pages/LoginPage";
 import HRDashboard from "./pages/hr/HRDashboard";
 import ApplicationsPage from "./pages/hr/ApplicationsPage";
 import InterviewsPage from "./pages/hr/InterviewsPage";
+import NewInterviewPage from "./pages/hr/NewInterviewPage";
 import MembersPage from "./pages/hr/MembersPage";
 import EvaluationsPage from "./pages/hr/EvaluationsPage";
 import RecognitionPage from "./pages/hr/RecognitionPage";
@@ -47,6 +48,7 @@ const App = () => (
               <Route path="/hr/dashboard" element={<ProtectedRoute requiredRole="hr"><HRDashboard /></ProtectedRoute>} />
               <Route path="/hr/applications" element={<ProtectedRoute requiredRole="hr"><ApplicationsPage /></ProtectedRoute>} />
               <Route path="/hr/interviews" element={<ProtectedRoute requiredRole="hr"><InterviewsPage /></ProtectedRoute>} />
+              <Route path="/hr/interviews/new" element={<ProtectedRoute requiredRole="hr"><NewInterviewPage /></ProtectedRoute>} />
               <Route path="/hr/members" element={<ProtectedRoute requiredRole="hr"><MembersPage /></ProtectedRoute>} />
               <Route path="/hr/evaluations" element={<ProtectedRoute requiredRole="hr"><EvaluationsPage /></ProtectedRoute>} />
               <Route path="/hr/recognition" element={<ProtectedRoute requiredRole="hr"><RecognitionPage /></ProtectedRoute>} />
