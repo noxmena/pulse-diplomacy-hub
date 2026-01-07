@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Lock, User, Eye, EyeOff, LogIn } from 'lucide-react';
@@ -13,7 +13,7 @@ import logo from '@/assets/logo.png';
 
 export default function LoginPage() {
   const { t, isRTL } = useLanguage();
-  const { signIn } = useAuth();
+  const { signIn, user, userRole, loading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   
@@ -22,6 +22,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  // Redirect if already logged in based on role
+  useEffect(() => {
+    if (!loading && user && userRole) {
+      if (userRole === 'admin') {
+        navigate('/admin/users', { replace: true });
+      } else if (userRole === 'hr') {
+        navigate('/hr/dashboard', { replace: true });
+      }
+    }
+  }, [user, userRole, loading, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +55,7 @@ export default function LoginPage() {
       description: t('auth', 'loginSuccess'),
     });
     
-    navigate('/hr/dashboard');
+    // Role-based redirect will happen via useEffect when userRole is fetched
   };
 
   return (
