@@ -6,10 +6,49 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Send, User, Mail, Phone, GraduationCap, MapPin } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { z } from "zod";
+
+// Validation schema for join application form
+const joinFormSchema = z.object({
+  name: z.string()
+    .trim()
+    .min(2, "الاسم يجب أن يكون حرفين على الأقل")
+    .max(100, "الاسم يجب ألا يتجاوز 100 حرف")
+    .regex(/^[\u0600-\u06FFa-zA-Z\s]+$/, "الاسم يجب أن يحتوي على حروف فقط"),
+  email: z.string()
+    .trim()
+    .email("البريد الإلكتروني غير صحيح")
+    .max(255, "البريد الإلكتروني طويل جداً"),
+  phone: z.string()
+    .trim()
+    .regex(/^01[0125][0-9]{8}$/, "رقم الهاتف غير صحيح (يجب أن يبدأ بـ 01)"),
+  age: z.number()
+    .int("العمر يجب أن يكون رقماً صحيحاً")
+    .min(16, "العمر يجب أن يكون 16 سنة على الأقل")
+    .max(40, "العمر يجب ألا يتجاوز 40 سنة"),
+  governorate: z.string()
+    .trim()
+    .min(2, "المحافظة مطلوبة")
+    .max(50, "اسم المحافظة طويل جداً"),
+  education: z.string()
+    .trim()
+    .min(5, "المؤهل الدراسي يجب أن يكون 5 أحرف على الأقل")
+    .max(200, "المؤهل الدراسي طويل جداً"),
+  experience: z.string()
+    .trim()
+    .max(1000, "الخبرات يجب ألا تتجاوز 1000 حرف")
+    .optional()
+    .transform(val => val === "" ? undefined : val),
+  motivation: z.string()
+    .trim()
+    .min(20, "دوافعك يجب أن تكون 20 حرفاً على الأقل")
+    .max(1000, "الدوافع يجب ألا تتجاوز 1000 حرف"),
+});
 
 const JoinForm = () => {
   const { toast } = useToast();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -22,24 +61,55 @@ const JoinForm = () => {
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    // Clear error when user starts typing
+    if (formErrors[name]) {
+      setFormErrors(prev => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setFormErrors({});
+    
+    // Validate with Zod
+    const validationResult = joinFormSchema.safeParse({
+      ...formData,
+      age: formData.age ? parseInt(formData.age) : undefined,
+    });
+
+    if (!validationResult.success) {
+      const errors: Record<string, string> = {};
+      validationResult.error.errors.forEach((err) => {
+        if (err.path[0]) {
+          errors[err.path[0] as string] = err.message;
+        }
+      });
+      setFormErrors(errors);
+      toast({
+        title: "يرجى تصحيح الأخطاء",
+        description: "تحقق من البيانات المدخلة",
+        variant: "destructive",
+      });
+      setIsSubmitting(false);
+      return;
+    }
+
+    const validatedData = validationResult.data;
     
     const { error } = await supabase
       .from('join_applications')
       .insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone,
-        age: parseInt(formData.age),
-        governorate: formData.governorate,
-        education: formData.education,
-        experience: formData.experience || null,
-        motivation: formData.motivation,
+        name: validatedData.name,
+        email: validatedData.email,
+        phone: validatedData.phone,
+        age: validatedData.age,
+        governorate: validatedData.governorate,
+        education: validatedData.education,
+        experience: validatedData.experience || null,
+        motivation: validatedData.motivation,
       });
 
     if (error) {
@@ -114,8 +184,10 @@ const JoinForm = () => {
                 onChange={handleChange}
                 placeholder="أدخل اسمك الكامل"
                 required
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                maxLength={100}
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.name ? 'border-destructive' : ''}`}
               />
+              {formErrors.name && <p className="text-destructive text-xs">{formErrors.name}</p>}
             </div>
 
             {/* Email */}
@@ -131,8 +203,10 @@ const JoinForm = () => {
                 onChange={handleChange}
                 placeholder="example@email.com"
                 required
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                maxLength={255}
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.email ? 'border-destructive' : ''}`}
               />
+              {formErrors.email && <p className="text-destructive text-xs">{formErrors.email}</p>}
             </div>
 
             {/* Phone */}
@@ -148,8 +222,10 @@ const JoinForm = () => {
                 onChange={handleChange}
                 placeholder="01xxxxxxxxx"
                 required
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                maxLength={11}
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.phone ? 'border-destructive' : ''}`}
               />
+              {formErrors.phone && <p className="text-destructive text-xs">{formErrors.phone}</p>}
             </div>
 
             {/* Age */}
@@ -167,8 +243,9 @@ const JoinForm = () => {
                 required
                 min="16"
                 max="40"
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.age ? 'border-destructive' : ''}`}
               />
+              {formErrors.age && <p className="text-destructive text-xs">{formErrors.age}</p>}
             </div>
 
             {/* Governorate */}
@@ -183,8 +260,10 @@ const JoinForm = () => {
                 onChange={handleChange}
                 placeholder="مثال: القاهرة"
                 required
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                maxLength={50}
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.governorate ? 'border-destructive' : ''}`}
               />
+              {formErrors.governorate && <p className="text-destructive text-xs">{formErrors.governorate}</p>}
             </div>
 
             {/* Education */}
@@ -199,8 +278,10 @@ const JoinForm = () => {
                 onChange={handleChange}
                 placeholder="مثال: بكالوريوس علوم سياسية"
                 required
-                className="bg-secondary/50 border-border/50 focus:border-primary"
+                maxLength={200}
+                className={`bg-secondary/50 border-border/50 focus:border-primary ${formErrors.education ? 'border-destructive' : ''}`}
               />
+              {formErrors.education && <p className="text-destructive text-xs">{formErrors.education}</p>}
             </div>
           </div>
 
@@ -215,8 +296,10 @@ const JoinForm = () => {
               onChange={handleChange}
               placeholder="اذكر أي خبرات تطوعية أو قيادية سابقة..."
               rows={3}
-              className="bg-secondary/50 border-border/50 focus:border-primary resize-none"
+              maxLength={1000}
+              className={`bg-secondary/50 border-border/50 focus:border-primary resize-none ${formErrors.experience ? 'border-destructive' : ''}`}
             />
+            {formErrors.experience && <p className="text-destructive text-xs">{formErrors.experience}</p>}
           </div>
 
           {/* Motivation */}
@@ -231,8 +314,10 @@ const JoinForm = () => {
               placeholder="شاركنا دوافعك وأهدافك..."
               required
               rows={4}
-              className="bg-secondary/50 border-border/50 focus:border-primary resize-none"
+              maxLength={1000}
+              className={`bg-secondary/50 border-border/50 focus:border-primary resize-none ${formErrors.motivation ? 'border-destructive' : ''}`}
             />
+            {formErrors.motivation && <p className="text-destructive text-xs">{formErrors.motivation}</p>}
           </div>
 
           {/* Submit Button */}
