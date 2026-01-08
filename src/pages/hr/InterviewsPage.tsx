@@ -124,6 +124,8 @@ export default function InterviewsPage() {
   const handleSaveEvaluation = (isDraft: boolean) => {
     if (!selectedInterview) return;
     
+    const totalScoreValue = evaluation.communication + evaluation.motivation + evaluation.skills + evaluation.cultureFit + evaluation.overall;
+    
     updateInterviewMutation.mutate({
       id: selectedInterview.id,
       updates: {
@@ -132,12 +134,28 @@ export default function InterviewsPage() {
         score_skills: evaluation.skills,
         score_culture_fit: evaluation.cultureFit,
         score_overall: evaluation.overall,
+        total_score: totalScoreValue,
         notes: evaluation.notes,
         recommendation: evaluation.recommendation || null,
         is_draft: isDraft,
         status: isDraft ? 'scheduled' : 'completed',
       },
     });
+  };
+
+  // Reset evaluation when selecting a different interview
+  const openEvaluationDialog = (interview: any) => {
+    setSelectedInterview(interview);
+    setEvaluation({
+      communication: interview.score_communication ?? 5,
+      motivation: interview.score_motivation ?? 5,
+      skills: interview.score_skills ?? 5,
+      cultureFit: interview.score_culture_fit ?? 5,
+      overall: interview.score_overall ?? 5,
+      notes: interview.notes ?? '',
+      recommendation: interview.recommendation ?? '',
+    });
+    setIsEvaluationOpen(true);
   };
 
   const generateWhatsAppMessage = (interview: any) => {
@@ -303,7 +321,7 @@ export default function InterviewsPage() {
                             </Button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align={isRTL ? 'start' : 'end'}>
-                            <DropdownMenuItem onClick={() => { setSelectedInterview(interview); setIsEvaluationOpen(true); }}>
+                            <DropdownMenuItem onClick={() => openEvaluationDialog(interview)}>
                               <CheckCircle2 className="w-4 h-4 mr-2" />
                               {t('interviews', 'evaluationForm')}
                             </DropdownMenuItem>
@@ -376,7 +394,7 @@ export default function InterviewsPage() {
                             <div
                               key={interview.id}
                               className="text-xs p-1 bg-primary/10 rounded truncate cursor-pointer hover:bg-primary/20"
-                              onClick={() => { setSelectedInterview(interview); setIsEvaluationOpen(true); }}
+                              onClick={() => openEvaluationDialog(interview)}
                             >
                               {format(new Date(interview.scheduled_at), 'h:mm a')} - {interview.applicant?.full_name}
                             </div>
