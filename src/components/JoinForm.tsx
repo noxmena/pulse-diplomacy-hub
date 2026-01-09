@@ -5,7 +5,6 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { Send, User, Mail, Phone, GraduationCap, MapPin } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 // Validation schema for join application form
@@ -99,44 +98,63 @@ const JoinForm = () => {
 
     const validatedData = validationResult.data;
     
-    const { error } = await supabase
-      .from('join_applications')
-      .insert({
-        name: validatedData.name,
-        email: validatedData.email,
-        phone: validatedData.phone,
-        age: validatedData.age,
-        governorate: validatedData.governorate,
-        education: validatedData.education,
-        experience: validatedData.experience || null,
-        motivation: validatedData.motivation,
-      });
+    try {
+      const response = await fetch(
+        'https://grgtrnkyonuocxesstrf.supabase.co/functions/v1/submit-application',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            name: validatedData.name,
+            email: validatedData.email,
+            phone: validatedData.phone,
+            age: validatedData.age,
+            governorate: validatedData.governorate,
+            education: validatedData.education,
+            experience: validatedData.experience || null,
+            motivation: validatedData.motivation,
+          }),
+        }
+      );
 
-    if (error) {
+      const result = await response.json();
+
+      if (!response.ok) {
+        const errorMessage = result.error_ar || result.error || "فشل في إرسال الطلب";
+        toast({
+          title: response.status === 429 ? "طلبات كثيرة جداً" : "حدث خطأ",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        setIsSubmitting(false);
+        return;
+      }
+      
+      toast({
+        title: "تم إرسال طلبك بنجاح! ✓",
+        description: "سيتم التواصل معك قريباً",
+      });
+      
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        age: "",
+        governorate: "",
+        education: "",
+        experience: "",
+        motivation: "",
+      });
+    } catch (error) {
       toast({
         title: "حدث خطأ",
-        description: "فشل في إرسال الطلب، يرجى المحاولة مرة أخرى",
+        description: "فشل في الاتصال بالخادم، يرجى المحاولة مرة أخرى",
         variant: "destructive",
       });
-      setIsSubmitting(false);
-      return;
     }
     
-    toast({
-      title: "تم إرسال طلبك بنجاح! ✓",
-      description: "سيتم التواصل معك قريباً",
-    });
-    
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      age: "",
-      governorate: "",
-      education: "",
-      experience: "",
-      motivation: "",
-    });
     setIsSubmitting(false);
   };
 
