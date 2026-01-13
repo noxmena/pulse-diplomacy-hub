@@ -49,7 +49,8 @@ const App = () => (
               <Route path="/hr/dashboard" element={<ProtectedRoute requiredRole="hr"><HRDashboard /></ProtectedRoute>} />
               <Route path="/hr/applications" element={<ProtectedRoute requiredRole="hr"><ApplicationsPage /></ProtectedRoute>} />
               <Route path="/hr/applications/:id" element={<ProtectedRoute requiredRole="hr"><ApplicationDetailPage /></ProtectedRoute>} />
-              <Route path="/hr/interviews" element={<ProtectedRoute requiredRole="hr"><InterviewsPage /></ProtectedRoute>} />
+              {/* Use a wildcard to avoid 404s on trailing slashes and future nested routes */}
+              <Route path="/hr/interviews/*" element={<ProtectedRoute requiredRole="hr"><InterviewsPage /></ProtectedRoute>} />
               <Route path="/hr/interviews/new" element={<ProtectedRoute requiredRole="hr"><NewInterviewPage /></ProtectedRoute>} />
               <Route path="/hr/members" element={<ProtectedRoute requiredRole="hr"><MembersPage /></ProtectedRoute>} />
               <Route path="/hr/evaluations" element={<ProtectedRoute requiredRole="hr"><EvaluationsPage /></ProtectedRoute>} />

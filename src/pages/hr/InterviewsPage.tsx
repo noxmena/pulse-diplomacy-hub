@@ -114,11 +114,12 @@ export default function InterviewsPage() {
         .eq('id', id);
       if (error) throw error;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['interviews'] });
-      toast({ title: t('common', 'success') });
-      setIsEvaluationOpen(false);
-    },
+     onSuccess: () => {
+       // Our queryKey includes filters (search/status), so invalidate all variations.
+       queryClient.invalidateQueries({ queryKey: ['interviews'], exact: false });
+       toast({ title: t('common', 'success') });
+       setIsEvaluationOpen(false);
+     },
   });
 
   const handleSaveEvaluation = (isDraft: boolean) => {
@@ -307,6 +308,12 @@ export default function InterviewsPage() {
                         <Badge variant="outline" className={statusColors[interview.status] || ''}>
                           {t('interviewStatus', interview.status)}
                         </Badge>
+
+                        {interview.recommendation && (
+                          <Badge variant="secondary">
+                            {t('applications', interview.recommendation)}
+                          </Badge>
+                        )}
                         
                         {interview.total_score !== null && (
                           <span className="text-sm font-medium">
