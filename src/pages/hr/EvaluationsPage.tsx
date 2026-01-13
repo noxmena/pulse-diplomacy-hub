@@ -68,6 +68,10 @@ export default function EvaluationsPage() {
 
   const createEvaluationMutation = useMutation({
     mutationFn: async () => {
+      if (!selectedMember) {
+        throw new Error('Please select a member');
+      }
+      // Note: total_score is a generated column - do NOT include it in the insert
       const { error } = await supabase.from('monthly_evaluations').insert({
         member_id: selectedMember,
         evaluation_month: `${selectedMonth}-01`,
@@ -76,7 +80,7 @@ export default function EvaluationsPage() {
         team_collaboration: evaluation.teamwork,
         initiative_growth: evaluation.initiative,
         policy_compliance: evaluation.compliance,
-        evaluator_notes: evaluation.notes,
+        evaluator_notes: evaluation.notes || null,
         is_submitted: true,
       });
       if (error) throw error;
@@ -85,10 +89,15 @@ export default function EvaluationsPage() {
       queryClient.invalidateQueries({ queryKey: ['evaluations'] });
       toast({ title: t('common', 'success') });
       setIsDialogOpen(false);
+      setSelectedMember('');
       setEvaluation({ attendance: 5, taskExecution: 5, teamwork: 5, initiative: 5, compliance: 5, notes: '' });
     },
-    onError: () => {
-      toast({ title: t('common', 'error'), variant: 'destructive' });
+    onError: (error) => {
+      toast({ 
+        title: t('common', 'error'), 
+        description: error instanceof Error ? error.message : 'Failed to create evaluation',
+        variant: 'destructive' 
+      });
     },
   });
 
@@ -175,8 +184,12 @@ export default function EvaluationsPage() {
                   />
                 </div>
 
-                <Button className="w-full" onClick={() => createEvaluationMutation.mutate()}>
-                  {t('common', 'submit')}
+                <Button 
+                  className="w-full" 
+                  onClick={() => createEvaluationMutation.mutate()}
+                  disabled={!selectedMember || createEvaluationMutation.isPending}
+                >
+                  {createEvaluationMutation.isPending ? 'Submitting...' : t('common', 'submit')}
                 </Button>
               </div>
             </DialogContent>
